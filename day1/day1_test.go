@@ -4,14 +4,16 @@ import (
 	"testing"
 )
 
-func TestPartA(t *testing.T) {
-	data := `3   4
+const (
+	data = `3   4
 4   3
 2   5
 1   3
 3   9
 3   3`
+)
 
+func TestPartA(t *testing.T) {
 	expected := 11
 	result := PartA(data)
 
@@ -21,9 +23,7 @@ func TestPartA(t *testing.T) {
 }
 
 func TestPartB(t *testing.T) {
-	data := ""
-
-	expected := 0
+	expected := 31
 	result := PartB(data)
 
 	if expected != result {
