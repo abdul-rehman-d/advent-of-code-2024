@@ -32,9 +32,11 @@ import (
 	"testing"
 )
 
-func TestPartA(t *testing.T) {
-	data := ""
+const (
+	data = ""
+)
 
+func TestPartA(t *testing.T) {
 	expected := 0
 	result := PartA(data)
 
@@ -45,8 +47,6 @@ func TestPartA(t *testing.T) {
 
 
 func TestPartB(t *testing.T) {
-	data := ""
-
 	expected := 0
 	result := PartB(data)
 
