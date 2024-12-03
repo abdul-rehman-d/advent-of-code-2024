@@ -5,9 +5,13 @@ import (
 	"advent-of-code-2024/day2"
 	"advent-of-code-2024/day3"
 	"fmt"
+	"io"
 	"log"
 	"os"
+	"os/exec"
+	"slices"
 	"strconv"
+	"strings"
 )
 
 func getChallengeInput(i int) string {
@@ -59,6 +63,27 @@ func TestPartB(t *testing.T) {
 `, day)
 }
 
+func solve(day int) {
+
+	partA := []func(string) int{
+		day1.PartA,
+		day2.PartA,
+		day3.PartA,
+	}
+	partB := []func(string) int{
+		day1.PartB,
+		day2.PartB,
+		day3.PartB,
+	}
+
+	if day > len(partA) {
+		log.Fatalf("Day cannot be more than %d\n", len(partA))
+	}
+
+	fmt.Printf("Part A Answer => %d\n", partA[day-1](getChallengeInput(day)))
+	fmt.Printf("Part B Answer => %d\n", partB[day-1](getChallengeInput(day)))
+}
+
 func generate(day int) error {
 	folderName := fmt.Sprintf("./day%d", day)
 
@@ -105,28 +130,80 @@ func generate(day int) error {
 	}
 	f.WriteString(getTestFileContents(day))
 
+	f, err = os.OpenFile("main.go", os.O_RDWR, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	bytes, err := io.ReadAll(f)
+	if err != nil {
+		return err
+	}
+
+	lines := strings.Split(string(bytes), "\n")
+
+	foundAt := -1
+	for lineNum, line := range lines {
+		if strings.Contains(line, "import") {
+			foundAt = lineNum
+			break
+		}
+	}
+
+	if foundAt < 0 {
+		return fmt.Errorf("why not")
+	}
+
+	column := strings.LastIndex(lines[foundAt+1], "/day")
+
+	if column < 0 {
+		return fmt.Errorf("why not 2")
+	}
+
+	toInsert := []string{
+		lines[foundAt+1][:column] + fmt.Sprintf("/day%d\"", day),
+	}
+	lines = slices.Concat(lines[:foundAt+2], toInsert, lines[foundAt+2:])
+
+	for lineNum := foundAt; lineNum < len(lines); lineNum++ {
+		if strings.Contains(lines[lineNum], "partA :=") {
+			foundAt = lineNum
+			break
+		}
+	}
+
+	toInsert = []string{fmt.Sprintf("day%d.PartA,", day)}
+	for lineNum := foundAt; lineNum < len(lines); lineNum++ {
+		if strings.Contains(lines[lineNum], "}") {
+			foundAt = lineNum
+			lines = slices.Concat(lines[:lineNum], toInsert, lines[lineNum:])
+			break
+		}
+	}
+
+	toInsert = []string{fmt.Sprintf("day%d.PartB,", day)}
+	for lineNum := foundAt; lineNum < len(lines); lineNum++ {
+		if strings.Contains(lines[lineNum], "partB := ") {
+			foundAt = lineNum
+			break
+		}
+	}
+	for lineNum := foundAt; lineNum < len(lines); lineNum++ {
+		if strings.Contains(lines[lineNum], "}") {
+			lines = slices.Concat(lines[:lineNum], toInsert, lines[lineNum:])
+			break
+		}
+	}
+
+	f.Seek(0, 0)
+	f.WriteString(strings.Join(lines, "\n"))
+
+	cmd := exec.Command("gopls", "format", "-w", "main.go")
+	if err = cmd.Run(); err != nil {
+		return err
+	}
+
 	return nil
-}
-
-func solve(day int) {
-
-	partA := []func(string) int{
-		day1.PartA,
-		day2.PartA,
-		day3.PartA,
-	}
-	partB := []func(string) int{
-		day1.PartB,
-		day2.PartB,
-		day3.PartB,
-	}
-
-	if day > len(partA) {
-		log.Fatalf("Day cannot be more than %d\n", len(partA))
-	}
-
-	fmt.Printf("Part A Answer => %d\n", partA[day-1](getChallengeInput(day)))
-	fmt.Printf("Part B Answer => %d\n", partB[day-1](getChallengeInput(day)))
 }
 
 func main() {
