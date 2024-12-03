@@ -2,7 +2,6 @@ package day2
 
 import (
 	"advent-of-code-2024/utils"
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -28,6 +27,26 @@ func parse(lines []string) [][]int {
 	return parsed
 }
 
+func check(report []int) bool {
+	dir := "inc"
+	if report[1] < report[0] {
+		dir = "dec"
+	}
+	for i := 0; i < len(report)-1; i++ {
+		diff := report[i+1] - report[i]
+		// increasing or decreasing
+		cond1 := diff > 0 && dir == "dec"
+		cond2 := diff < 0 && dir == "inc"
+		// Any two adjacent levels differ by at least one and at most three.
+		cond3 := math.Abs(float64(diff)) < 1 || math.Abs(float64(diff)) > 3
+
+		if cond1 || cond2 || cond3 {
+			return false
+		}
+	}
+	return true
+}
+
 func PartA(data string) int {
 	lines := strings.Split(data, "\n")
 	lines = utils.FilterEmptyLines(lines)
@@ -39,32 +58,7 @@ func PartA(data string) int {
 			panic("why only one value")
 		}
 
-		flag := false
-		dir := "inc"
-		if report[1] < report[0] {
-			dir = "dec"
-		}
-
-		for i := 0; i < len(report)-1; i++ {
-			diff := report[i+1] - report[i]
-			// increasing or decreasing
-			if diff > 0 && dir == "dec" {
-				flag = true
-				break
-			}
-			if diff < 0 && dir == "inc" {
-				flag = true
-				break
-			}
-			// Any two adjacent levels differ by at least one and at most three.
-			if math.Abs(float64(diff)) < 1 || math.Abs(float64(diff)) > 3 {
-				flag = true
-				break
-			}
-		}
-
-		if !flag {
-			fmt.Println(report)
+		if check(report) {
 			safe++
 		}
 	}
