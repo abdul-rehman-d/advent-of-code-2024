@@ -7,3 +7,4 @@ Trying to see how many stars can i get on [Advent of Code 2024](https://adventof
 | Day | Done | Link | Notes |
 | --- | ---- | ---- | ----- |
 | 1   | [X]  | [goto](https://adventofcode.com/2024/day/1) | Part A is meh. Proud about my solution for Part B (not using hashmap). Can optimize such that list is sorted when being parsed from file and not afterwards making total `O(NlogN)` probably.
+| 2   | [X]  | [goto](https://adventofcode.com/2024/day/2) | Took me a lot of time to figure out Part A but it was basic. For Part B, I went with non optimal solution. Because my `O(n)` solution did not work. Can implement backtracking but not sure how much better is that.
