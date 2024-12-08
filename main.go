@@ -15,6 +15,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func getChallengeInput(i int) string {
@@ -89,8 +90,18 @@ func solve(day int) {
 		log.Fatalf("Day cannot be more than %d\n", len(partA))
 	}
 
-	fmt.Printf("Part A Answer => %d\n", partA[day-1](getChallengeInput(day)))
-	fmt.Printf("Part B Answer => %d\n", partB[day-1](getChallengeInput(day)))
+	input := getChallengeInput(day)
+	startTime := time.Now()
+	partASolution := partA[day-1](input)
+	partATimeTaken := time.Now().Sub(startTime).Milliseconds()
+	startTime = time.Now()
+	partBSolution := partB[day-1](input)
+	partBTimeTaken := time.Now().Sub(startTime).Milliseconds()
+
+	fmt.Printf("Part A Answer => %d\n", partASolution)
+	fmt.Printf("Part B Answer => %d\n", partBSolution)
+	fmt.Printf("Part A Time => %dms\n", partATimeTaken)
+	fmt.Printf("Part B Time => %dms\n", partBTimeTaken)
 }
 
 func generate(day int) error {
