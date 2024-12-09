@@ -1,5 +1,7 @@
 package utils
 
+import "slices"
+
 func FilterEmptyLines(data []string) []string {
 	out := make([]string, 0, len(data))
 	for _, line := range data {
@@ -8,6 +10,10 @@ func FilterEmptyLines(data []string) []string {
 		}
 	}
 	return out
+}
+
+func DeleteIndex[T any](array []T, idx int) []T {
+	return slices.Concat(array[:idx], array[idx+1:])
 }
 
 func ReplaceStringAtIndex(s string, idx int, ch byte) string {
