@@ -1,6 +1,9 @@
 package utils
 
-import "slices"
+import (
+	"slices"
+	"strings"
+)
 
 func FilterEmptyLines(data []string) []string {
 	out := make([]string, 0, len(data))
@@ -24,6 +27,22 @@ func ReplaceStringAtIndex(s string, idx int, ch byte) string {
 		} else {
 			out += string(s[i])
 		}
+	}
+	return out
+}
+
+func MakeIntMatrix(data string) [][]int {
+	lines := strings.Split(data, "\n")
+	lines = FilterEmptyLines(lines)
+
+	out := make([][]int, len(lines))
+
+	for i, line := range lines {
+		temp := make([]int, len(line))
+		for i := 0; i < len(line); i++ {
+			temp[i] = int(line[i] - '0')
+		}
+		out[i] = temp
 	}
 	return out
 }
