@@ -3,10 +3,18 @@ package day11
 import (
 	"fmt"
 	"math"
-	"slices"
 	"strconv"
 	"strings"
 )
+
+type Coord struct {
+	Stone int
+	N     int
+}
+
+type Solver struct {
+	Cache map[Coord]int
+}
 
 func PartA(data string) int {
 	const NUM_OF_BLINKS = 25
@@ -30,42 +38,53 @@ func solve(data string, num_of_blinks int) int {
 
 	fmt.Println(stones)
 
+	solver := &Solver{
+		Cache: map[Coord]int{},
+	}
+
 	count := 0
 
 	for stoneIdx, ogStone := range stones {
 		fmt.Printf("Dealing with stone # %d:\t\t%d\n", stoneIdx+1, ogStone)
-		stones := []int{ogStone}
-		for i := 0; i < num_of_blinks; i++ {
-			idx := 0
-			maxx := len(stones)
-			for idx < maxx {
-				stone := stones[idx]
-				if stone == 0 {
-					stones[idx] = 1
-					idx++
-					continue
-				}
-
-				if numOfDigits := getNumOfDigits(stone); numOfDigits%2 == 0 {
-					num1, num2 := SplitNumIntoTwo(stone)
-					stones = slices.Concat(
-						stones[:idx],
-						[]int{num1, num2},
-						stones[idx+1:],
-					)
-					idx += 2
-					maxx += 1
-					continue
-				}
-
-				stones[idx] = stone * 2024
-				idx++
-			}
-		}
-		count += len(stones)
+		stone := Coord{Stone: ogStone, N: num_of_blinks}
+		count += solver.do(stone)
 	}
 
 	return count
+}
+
+func (solver *Solver) do(stone Coord) int {
+	if count, has := solver.Cache[stone]; has {
+		return count
+	}
+	if stone.N == 0 {
+		solver.Cache[stone] = 1
+		return 1
+	}
+	if stone.Stone == 0 {
+		solver.Cache[stone] = solver.do(Coord{
+			Stone: 1,
+			N:     stone.N - 1,
+		})
+		return solver.Cache[stone]
+	}
+	if numOfDigits := getNumOfDigits(stone.Stone); numOfDigits%2 == 0 {
+		num1, num2 := SplitNumIntoTwo(stone.Stone)
+
+		solver.Cache[stone] = solver.do(Coord{
+			Stone: num1,
+			N:     stone.N - 1,
+		}) + solver.do(Coord{
+			Stone: num2,
+			N:     stone.N - 1,
+		})
+		return solver.Cache[stone]
+	}
+	solver.Cache[stone] = solver.do(Coord{
+		Stone: stone.Stone * 2024,
+		N:     stone.N - 1,
+	})
+	return solver.Cache[stone]
 }
 
 func getNumOfDigits(num int) int {
