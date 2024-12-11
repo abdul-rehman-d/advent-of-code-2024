@@ -8,9 +8,12 @@ import (
 	"strings"
 )
 
-const NUM_OF_BLINKS = 25
-
 func PartA(data string) int {
+	const NUM_OF_BLINKS = 25
+	return solve(data, NUM_OF_BLINKS)
+}
+
+func solve(data string, num_of_blinks int) int {
 	lines := strings.Split(data, "\n")
 	if len(lines) < 1 {
 		panic("why")
@@ -27,36 +30,42 @@ func PartA(data string) int {
 
 	fmt.Println(stones)
 
-	for i := 0; i < NUM_OF_BLINKS; i++ {
-		newStones := make([]int, len(stones))
-		copy(newStones, stones)
-		idx := 0
-		for _, stone := range stones {
-			if stone == 0 {
-				newStones[idx] = 1
+	count := 0
+
+	for stoneIdx, ogStone := range stones {
+		fmt.Printf("Dealing with stone # %d:\t\t%d\n", stoneIdx+1, ogStone)
+		stones := []int{ogStone}
+		for i := 0; i < num_of_blinks; i++ {
+			idx := 0
+			maxx := len(stones)
+			for idx < maxx {
+				stone := stones[idx]
+				if stone == 0 {
+					stones[idx] = 1
+					idx++
+					continue
+				}
+
+				if numOfDigits := getNumOfDigits(stone); numOfDigits%2 == 0 {
+					num1, num2 := SplitNumIntoTwo(stone)
+					stones = slices.Concat(
+						stones[:idx],
+						[]int{num1, num2},
+						stones[idx+1:],
+					)
+					idx += 2
+					maxx += 1
+					continue
+				}
+
+				stones[idx] = stone * 2024
 				idx++
-				continue
 			}
-
-			if numOfDigits := getNumOfDigits(stone); numOfDigits%2 == 0 {
-				num1, num2 := SplitNumIntoTwo(stone)
-				newStones = slices.Concat(
-					newStones[:idx],
-					[]int{num1, num2},
-					newStones[idx+1:],
-				)
-				idx += 2
-				continue
-			}
-
-			newStones[idx] = stone * 2024
-			idx++
 		}
-		stones = newStones
-		fmt.Printf("Done with round %d\n", i+1)
+		count += len(stones)
 	}
 
-	return len(stones)
+	return count
 }
 
 func getNumOfDigits(num int) int {
