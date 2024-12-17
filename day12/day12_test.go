@@ -20,6 +20,11 @@ VVIIICJJEE
 MIIIIIJJEE
 MIIISIJEEE
 MMMISSJEEE`
+
+	data3 = `AAAA
+BBCD
+BBCC
+EEEC`
 )
 
 func TestPartA(t *testing.T) {
@@ -37,9 +42,9 @@ func TestPartA(t *testing.T) {
 }
 
 func TestPartB(t *testing.T) {
-	expected1 := 0
-	expected2 := 0
-	result1 := PartB(data1)
+	expected1 := 80
+	expected2 := 1206
+	result1 := PartB(data3)
 	result2 := PartB(data2)
 
 	if expected1 != result1 {
