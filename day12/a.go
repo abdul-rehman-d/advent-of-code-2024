@@ -13,10 +13,7 @@ type Sol struct {
 	A int
 }
 
-func PartA(data string) int {
-	lines := strings.Split(data, "\n")
-	lines = utils.FilterEmptyLines(lines)
-
+func parseBoys(lines []string) ([][]int, map[int][]Coord) {
 	areaMap := make([][]int, len(lines))
 	// bigTemp := make([][]byte, len(lines))
 	areaMapReverse := map[int][]Coord{}
@@ -78,6 +75,15 @@ func PartA(data string) int {
 			area++
 		}
 	}
+
+	return areaMap, areaMapReverse
+}
+
+func PartA(data string) int {
+	lines := strings.Split(data, "\n")
+	lines = utils.FilterEmptyLines(lines)
+
+	areaMap, areaMapReverse := parseBoys(lines)
 
 	answer := 0
 	solutions := make([]Sol, len(areaMapReverse))
