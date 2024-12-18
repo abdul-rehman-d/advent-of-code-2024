@@ -33,7 +33,7 @@ func parseMovement(str string) Move {
 	return Move{X: x, Y: y}
 }
 
-func parseMachines(data string) []Machine {
+func parseMachinesA(data string) []Machine {
 	lines := strings.Split(data, "\n")
 	lines = utils.FilterEmptyLines(lines)
 
@@ -54,14 +54,14 @@ func parseMachines(data string) []Machine {
 	return machines
 }
 
-func PartA(data string) int {
+func solve(data string, parseMachines func(string) []Machine) int {
 	machines := parseMachines(data)
 
 	answer := 0
 
 	for _, m := range machines {
 		tokens := math.MaxInt64
-		for numB := 1; numB < 10_000; numB++ {
+		for numB := 1; numB < m.Prize.X/m.B.X; numB++ {
 			bX := numB * m.B.X
 			if bX > m.Prize.X {
 				break
@@ -87,4 +87,8 @@ func PartA(data string) int {
 	}
 
 	return answer
+}
+
+func PartA(data string) int {
+	return solve(data, parseMachinesA)
 }
