@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"slices"
 	"strings"
+
+	"golang.org/x/exp/constraints"
 )
 
 func FilterEmptyLines(data []string) []string {
@@ -45,4 +48,16 @@ func MakeIntMatrix(data string) [][]int {
 		out[i] = temp
 	}
 	return out
+}
+
+func PrintGrid[T constraints.Integer](array [][]T) {
+	for _, row := range array {
+		for x := 0; x < len(row); x++ {
+			fmt.Print(string(row[x]))
+			if x != len(row)-1 {
+				fmt.Print(" ")
+			}
+		}
+		fmt.Println()
+	}
 }
