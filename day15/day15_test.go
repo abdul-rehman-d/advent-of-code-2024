@@ -38,6 +38,16 @@ vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
 ^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
 v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^
 `
+
+	data3 = `#######
+#...#.#
+#.....#
+#..OO@#
+#..O..#
+#.....#
+#######
+
+<vv<<^^<<^^`
 )
 
 func TestPartA(t *testing.T) {
@@ -57,10 +67,17 @@ func TestPartA(t *testing.T) {
 }
 
 func TestPartB(t *testing.T) {
-	expected := 0
-	result := PartB(data1)
+	expected1 := 618
+	result1 := PartB(data3)
+	
+	if expected1 != result1 {
+		t.Fatalf("\nExpected = %d\nResult = %d\n", expected1, result1)
+	}
 
-	if expected != result {
-		t.Fatalf("\nExpected = %d\nResult = %d\n", expected, result)
+	expected2 := 9021
+	result2 := PartB(data2)
+
+	if expected2 != result2 {
+		t.Fatalf("\nExpected = %d\nResult = %d\n", expected2, result2)
 	}
 }
