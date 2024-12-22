@@ -50,11 +50,11 @@ func MakeIntMatrix(data string) [][]int {
 	return out
 }
 
-func PrintGrid[T constraints.Integer](array [][]T) {
+func PrintGrid[T constraints.Integer](array [][]T, opts ...bool) {
 	for _, row := range array {
 		for x := 0; x < len(row); x++ {
 			fmt.Print(string(row[x]))
-			if x != len(row)-1 {
+			if x != len(row)-1 && len(opts) == 0 {
 				fmt.Print(" ")
 			}
 		}
